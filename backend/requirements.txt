@@ -1,0 +1,30 @@
+# ─── Web framework ────────────────────────────────────────────────────────────
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+
+# ─── Database ─────────────────────────────────────────────────────────────────
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0
+pgvector>=0.3.0          # SQLAlchemy type + psycopg2 codec for VECTOR columns
+
+# ─── Configuration ────────────────────────────────────────────────────────────
+pydantic-settings>=2.0.0
+python-dotenv>=1.0.0
+
+# ─── HTTP client (used by adapters to call Groq / Gemini REST APIs) ───────────
+httpx>=0.27.0
+
+# ─── File handling ────────────────────────────────────────────────────────────
+pypdf>=4.0.0             # PDF text extraction — pure Python, no native binaries
+python-multipart>=0.0.9  # Required by FastAPI for multipart/form-data uploads
+
+# ─── Auth ─────────────────────────────────────────────────────────────────────
+python-jose[cryptography]>=3.3.0   # JWT encode/decode
+passlib[bcrypt]>=1.7.4             # bcrypt password hashing
+email-validator>=2.0.0             # Required by Pydantic for EmailStr validation
+
+# ─── ML (Phase 6 — retention model) ──────────────────────────────────────────
+# scikit-learn adds ~15 MB runtime RSS — comfortably within Render 512 MB limit
+# torch/tensorflow are NOT here intentionally (would blow the RAM budget)
+scikit-learn>=1.5.0
+joblib>=1.4.0
