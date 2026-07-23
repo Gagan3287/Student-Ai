@@ -59,6 +59,7 @@ export default function DocumentsPage() {
     } else {
       stopPolling();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [documents]);
 
   const startPolling = () => {

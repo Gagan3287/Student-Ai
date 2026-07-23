@@ -4,7 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { GraduationCap, Lock, Mail, User, Loader2, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { api } from "@/lib/api";
+import { useTypewriter } from "@/hooks/useTypewriter";
+import HeroIllustration from "@/components/landing/HeroIllustration";
+
+const TYPEWRITER_WORDS = [
+  "Study Smarter.",
+  "Retain Longer.",
+  "Ace Your Exams.",
+];
 
 export default function SignupPage() {
   const router = useRouter();
@@ -16,6 +25,8 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+
+  const typedWord = useTypewriter(TYPEWRITER_WORDS, 60, 40, 2000);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,156 +59,249 @@ export default function SignupPage() {
         router.push("/login");
       }, 2500);
     } catch (err: any) {
-      setError(err.detail || "Registration failed. Try again.");
+      // Fix: check err.detail first, then err.message, then fallback
+      setError(err.detail || err.message || "Registration failed. Try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col justify-center py-12 sm:px-6 lg:px-8 selection:bg-primary/20">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md flex flex-col items-center">
-        <Link href="/" className="flex items-center gap-2 mb-6">
-          <GraduationCap className="h-10 w-10 text-primary animate-pulse" />
-          <span className="font-extrabold text-2xl tracking-tight bg-gradient-to-r from-primary via-indigo-500 to-violet-500 bg-clip-text text-transparent">
-            StudyMate AI
-          </span>
-        </Link>
-        <h2 className="text-center text-3xl font-extrabold tracking-tight text-foreground">
-          Create your account
-        </h2>
-        <p className="mt-2 text-center text-sm text-muted-foreground">
-          Or{" "}
-          <Link href="/login" className="font-medium text-primary hover:underline">
-            sign in to existing account
+    <div className="min-h-screen bg-background flex flex-col lg:flex-row selection:bg-primary/20">
+      {/* ── Left Column: Brand Panel ────────────────────────────────────────── */}
+      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-gradient-to-br from-primary via-indigo-600 to-violet-600 flex-col justify-between p-12 text-white">
+        {/* Decorative blobs */}
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] rounded-full bg-white/10 blur-3xl pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-black/10 blur-3xl pointer-events-none" />
+        
+        {/* Dot pattern overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.05] pointer-events-none"
+          style={{
+            backgroundImage: "radial-gradient(circle, white 1px, transparent 1px)",
+            backgroundSize: "24px 24px",
+          }}
+        />
+
+        <div className="relative z-10">
+          <Link href="/" className="inline-flex items-center gap-2 mb-12 hover:opacity-90 transition-opacity">
+            <GraduationCap className="h-8 w-8 text-white" />
+            <span className="font-extrabold text-2xl tracking-tight">
+              StudyMate AI
+            </span>
           </Link>
-        </p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="max-w-md"
+          >
+            <h1 className="text-4xl font-bold leading-tight mb-4">
+              Your intelligent study companion.
+              <br />
+              <span className="text-white/90 font-extrabold h-12 block mt-2">
+                {typedWord}
+                <span className="inline-block w-0.5 h-[0.8em] ml-1 bg-white align-middle animate-pulse" />
+              </span>
+            </h1>
+            <p className="text-white/80 text-lg font-light leading-relaxed">
+              Upload your syllabus, generate flashcards, and get instant answers tailored strictly to your notes.
+            </p>
+          </motion.div>
+        </div>
+
+        <motion.div 
+          className="relative z-10 w-full max-w-sm self-center drop-shadow-2xl opacity-90"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
+          <HeroIllustration />
+        </motion.div>
+
+        <div className="relative z-10 text-white/60 text-sm">
+          © {new Date().getFullYear()} StudyMate AI. All rights reserved.
+        </div>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-card py-8 px-4 border border-border/50 shadow-xl rounded-2xl sm:px-10">
-          {success ? (
-            <div className="text-center py-6 space-y-3">
-              <div className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-emerald-100 text-emerald-600 mb-2">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <h3 className="text-lg font-bold text-foreground">Registration Successful!</h3>
-              <p className="text-sm text-muted-foreground">
-                Redirecting you to the login page...
-              </p>
-            </div>
-          ) : (
-            <form className="space-y-5" onSubmit={handleSubmit}>
-              {error && (
-                <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive border border-destructive/20 font-medium">
-                  {error}
-                </div>
-              )}
+      {/* ── Right Column: Form ────────────────────────────────────────────── */}
+      <div className="flex-1 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-20 xl:px-24">
+        <div className="mx-auto w-full max-w-sm lg:max-w-md">
+          {/* Mobile Header (Hidden on Desktop) */}
+          <div className="lg:hidden flex flex-col items-center mb-10">
+            <Link href="/" className="flex items-center gap-2 mb-4">
+              <GraduationCap className="h-10 w-10 text-primary animate-pulse" />
+              <span className="font-extrabold text-2xl tracking-tight bg-gradient-to-r from-primary via-indigo-500 to-violet-500 bg-clip-text text-transparent">
+                StudyMate AI
+              </span>
+            </Link>
+            <h2 className="text-center text-3xl font-extrabold tracking-tight text-foreground">
+              Create your account
+            </h2>
+            <p className="mt-2 text-center text-sm text-muted-foreground">
+              Or{" "}
+              <Link href="/login" className="font-medium text-primary hover:underline">
+                sign in to existing account
+              </Link>
+            </p>
+          </div>
 
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-muted-foreground mb-1">
-                  Full name
-                </label>
-                <div className="relative rounded-lg shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
-                    <User className="h-4 w-4" />
-                  </div>
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    required
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2 border border-border bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all duration-200"
-                    placeholder="Alex Mercer"
-                  />
-                </div>
-              </div>
+          {/* Desktop Header */}
+          <div className="hidden lg:block mb-10">
+            <h2 className="text-3xl font-extrabold tracking-tight text-foreground">
+              Create your account
+            </h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link href="/login" className="font-medium text-primary hover:underline">
+                Sign in instead
+              </Link>
+            </p>
+          </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-1">
-                  Email address
-                </label>
-                <div className="relative rounded-lg shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
-                    <Mail className="h-4 w-4" />
-                  </div>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2 border border-border bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all duration-200"
-                    placeholder="alex@university.edu"
-                  />
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="bg-card py-8 px-6 sm:px-10 border border-border/50 shadow-2xl shadow-primary/5 rounded-3xl"
+          >
+            {success ? (
+              <motion.div 
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-6 space-y-3"
+              >
+                <div className="inline-flex items-center justify-center h-16 w-16 rounded-full bg-emerald-100 text-emerald-600 mb-2 shadow-sm">
+                  <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
                 </div>
-              </div>
+                <h3 className="text-xl font-bold text-foreground">Registration Successful!</h3>
+                <p className="text-sm text-muted-foreground">
+                  Redirecting you to the login page...
+                </p>
+              </motion.div>
+            ) : (
+              <form className="space-y-5" onSubmit={handleSubmit}>
+                {error && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    className="rounded-xl bg-destructive/10 p-3.5 text-sm text-destructive border border-destructive/20 font-medium flex items-start gap-2"
+                  >
+                    <svg className="h-5 w-5 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span>{error}</span>
+                  </motion.div>
+                )}
 
-              <div>
-                <label htmlFor="password" className="block text-sm font-medium text-muted-foreground mb-1">
-                  Password
-                </label>
-                <div className="relative rounded-lg shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
-                    <Lock className="h-4 w-4" />
-                  </div>
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2 border border-border bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all duration-200"
-                    placeholder="Min. 8 characters"
-                  />
+                <div className="space-y-4">
+                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
+                    <label htmlFor="name" className="block text-sm font-medium text-muted-foreground mb-1.5">
+                      Full name
+                    </label>
+                    <div className="relative rounded-xl shadow-sm">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-muted-foreground">
+                        <User className="h-4.5 w-4.5" />
+                      </div>
+                      <input
+                        id="name"
+                        name="name"
+                        type="text"
+                        required
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        className="block w-full pl-11 pr-4 py-2.5 border border-border bg-background rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all duration-200"
+                        placeholder="Alex Mercer"
+                      />
+                    </div>
+                  </motion.div>
+
+                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.15 }}>
+                    <label htmlFor="email" className="block text-sm font-medium text-muted-foreground mb-1.5">
+                      Email address
+                    </label>
+                    <div className="relative rounded-xl shadow-sm">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-muted-foreground">
+                        <Mail className="h-4.5 w-4.5" />
+                      </div>
+                      <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        required
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="block w-full pl-11 pr-4 py-2.5 border border-border bg-background rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all duration-200"
+                        placeholder="alex@university.edu"
+                      />
+                    </div>
+                  </motion.div>
+
+                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }}>
+                    <label htmlFor="password" className="block text-sm font-medium text-muted-foreground mb-1.5">
+                      Password
+                    </label>
+                    <div className="relative rounded-xl shadow-sm">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-muted-foreground">
+                        <Lock className="h-4.5 w-4.5" />
+                      </div>
+                      <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="block w-full pl-11 pr-4 py-2.5 border border-border bg-background rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all duration-200"
+                        placeholder="Min. 8 characters"
+                      />
+                    </div>
+                  </motion.div>
+
+                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.25 }}>
+                    <label htmlFor="confirm-password" className="block text-sm font-medium text-muted-foreground mb-1.5">
+                      Confirm Password
+                    </label>
+                    <div className="relative rounded-xl shadow-sm">
+                      <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-muted-foreground">
+                        <Lock className="h-4.5 w-4.5" />
+                      </div>
+                      <input
+                        id="confirm-password"
+                        name="confirm-password"
+                        type="password"
+                        required
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                        className="block w-full pl-11 pr-4 py-2.5 border border-border bg-background rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all duration-200"
+                        placeholder="Confirm password"
+                      />
+                    </div>
+                  </motion.div>
                 </div>
-              </div>
 
-              <div>
-                <label htmlFor="confirm-password" className="block text-sm font-medium text-muted-foreground mb-1">
-                  Confirm Password
-                </label>
-                <div className="relative rounded-lg shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-muted-foreground">
-                    <Lock className="h-4 w-4" />
-                  </div>
-                  <input
-                    id="confirm-password"
-                    name="confirm-password"
-                    type="password"
-                    required
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-2 border border-border bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm transition-all duration-200"
-                    placeholder="Confirm password"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 transition-all duration-200 group"
-                >
-                  {loading ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
-                  ) : (
-                    <>
-                      Register
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform duration-200" />
-                    </>
-                  )}
-                </button>
-              </div>
-            </form>
-          )}
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="pt-2">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-md text-sm font-semibold text-primary-foreground bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50 transition-all duration-200 group"
+                  >
+                    {loading ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <>
+                        Register
+                        <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-200" />
+                      </>
+                    )}
+                  </button>
+                </motion.div>
+              </form>
+            )}
+          </motion.div>
         </div>
       </div>
     </div>
