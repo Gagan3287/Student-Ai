@@ -8,6 +8,7 @@ const geistSans = localFont({
   variable: "--font-geist-sans",
   weight: "100 900",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
@@ -17,6 +18,9 @@ const geistMono = localFont({
 export const metadata: Metadata = {
   title: "StudyMate AI",
   description: "AI-powered study and placement companion",
+  verification: {
+    google: "3CH9fc390vSq2JJ5CezvbmSaZbhFlS6O022Hi1blDS8",
+  },
 };
 
 export default function RootLayout({
