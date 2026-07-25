@@ -1,7 +1,7 @@
 <div align="center">
 
 # 🎓 StudyMate AI
-
+<img src="landing.png" />
 ### Your AI-powered study and placement companion for engineering students
 
 [![Live Demo](https://img.shields.io/badge/demo-live-success?style=for-the-badge&logo=vercel)](https://studymate-aix.vercel.app/)
